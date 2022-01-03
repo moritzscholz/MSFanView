@@ -1,0 +1,14 @@
+disabled_rules:
+    - multiple_closures_with_trailing_closure
+excluded:
+identifier_name:
+    excluded:
+        - id
+        - i
+type_name:
+    excluded:
+        - ID
+trailing_whitespace:
+    ignores_empty_lines: true
+vertical_whitespace:
+    max_empty_lines: 2
