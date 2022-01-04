@@ -12,6 +12,7 @@ let colors: [Color] = [.red, .blue, .green, .gray]
 /// Creates a preview with sliders to control the settings of the `Fan`-view.
 ///
 struct FanAdjustablePreview: View {
+    @State private var isOpen: Bool = true
     @State private var leftAngleDeg: Double = -30
     @State private var rightAngleDeg: Double = 30
     @State private var cardSpread: Double = 1.5
@@ -26,6 +27,9 @@ struct FanAdjustablePreview: View {
 
     var body: some View {
         VStack {
+            Toggle("Open?", isOn: $isOpen.animation())
+                .padding()
+
             HStack {
                 VStack {
                     Slider(value: $leftAngleDeg, in: -360...360) {
@@ -60,6 +64,7 @@ struct FanAdjustablePreview: View {
             .padding()
 
             Fan(items: items,
+                opened: $isOpen,
                 leftAngle: Angle(degrees: leftAngleDeg),
                 rightAngle: Angle(degrees: rightAngleDeg),
                 cardSpread: cardSpread) { item in

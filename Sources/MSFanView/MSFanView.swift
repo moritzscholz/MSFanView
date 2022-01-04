@@ -4,7 +4,13 @@ public struct Fan<Items: RandomAccessCollection,
                   ItemContent: View>: View where Items.Element: Hashable & Identifiable {
     public typealias ContentProvider = (Items.Element) -> ItemContent
 
-    public let items: Items
+    private let items: Items
+
+    /// `true` if the fan is open (like a hand of cards) and `false` if not (like a deck of cards).
+    ///
+    /// This Binding can be animated to get a nice opening-effect like fanning up a deck of cards.
+    ///
+    @Binding var isOpen: Bool
     /// Leftmost card has this angle (if there is more than one card)
     public let leftAngle: Angle
     /// Rightmost card has this angle (if there is more than one card)
@@ -12,14 +18,16 @@ public struct Fan<Items: RandomAccessCollection,
     /// Higher spread means that the cards are further apart. A spread of 0 has all cards centered
     /// on the same point.
     public let cardSpread: Double
-    public let content: ContentProvider
+    private let content: ContentProvider
 
     public init(items: Items,
+                opened: Binding<Bool>,
                 leftAngle: Angle = .degrees(-30),
                 rightAngle: Angle = .degrees(30),
                 cardSpread: Double = 1.5,
                 content: @escaping ContentProvider) {
         self.items = items
+        self._isOpen = opened
         self.leftAngle = leftAngle
         self.rightAngle = rightAngle
         self.cardSpread = cardSpread
@@ -34,7 +42,9 @@ public struct Fan<Items: RandomAccessCollection,
                 ForEach(cards) { card in
                     content(card.item)
                         .offset(y: -fanSize.height*cardSpread)
-                        .rotationEffect(card.angle)
+                        .rotationEffect(isOpen
+                                        ? card.angle
+                                        : Angle(degrees: 0))
                         .offset(y: fanSize.height*cardSpread)
                 }
             }
